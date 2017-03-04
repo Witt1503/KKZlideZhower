@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using KKZlideZhower.Properties;
 
 namespace KKZlideZhower
 {
@@ -24,16 +25,19 @@ namespace KKZlideZhower
     DispatcherTimer timer;
     private LinkedList<string> pathList;
     private LinkedListNode<string> currentPath;
-    private string rootDir = @"C:\Users\witt1\Downloads\\WPFSlideShow\KKZlideZhower\Images";
+    private string rootDir;
 
     public MainWindow()
     {
       InitializeComponent();
       pathList = new LinkedList<string>();
+      rootDir = Settings.Default.AbsolutePath;
+      
+
       pathList = createPathList(rootDir);
       currentPath = pathList.First;
       timer = new DispatcherTimer();
-      timer.Interval = new TimeSpan(0, 0, 1);
+      timer.Interval = new TimeSpan(0, 0, 0, 0, Settings.Default.DisplayTimeMs);
       timer.Tick += new EventHandler(timer_Tick);
     }
 
@@ -79,6 +83,7 @@ namespace KKZlideZhower
     {
       currentPath = currentPath.List.First;
       PlaySlideShow(currentPath.Value);
+      this.KeyDown += new KeyEventHandler(MainWindow_Shutdown);
     }
     private void PlaySlideShow(string path)
     {
@@ -94,6 +99,12 @@ namespace KKZlideZhower
       Overlay.Text = txt[txt.Length-2] == "Reklamer" ? "" : txt[txt.Length - 2];
       //progressBar1.Value = ctr;
     }
-    
+    void MainWindow_Shutdown(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Escape)
+      {
+        Application.Current.Shutdown();
+      }
+    }
   }
 }

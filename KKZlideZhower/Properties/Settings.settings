@@ -2,10 +2,10 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="KKZlideZhower.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="DefaultPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="AbsolutePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Work\KKZlideZhower\KKZlideZhower\Images</Value>
     </Setting>
-    <Setting Name="DisplayTimeMs" Type="System.Double" Scope="User">
+    <Setting Name="DisplayTimeMs" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10000</Value>
     </Setting>
   </Settings>

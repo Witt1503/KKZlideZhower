@@ -25,22 +25,22 @@ namespace KKZlideZhower.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DefaultPath {
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Work\\KKZlideZhower\\KKZlideZhower\\Images")]
+        public string AbsolutePath {
             get {
-                return ((string)(this["DefaultPath"]));
+                return ((string)(this["AbsolutePath"]));
             }
             set {
-                this["DefaultPath"] = value;
+                this["AbsolutePath"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10000")]
-        public double DisplayTimeMs {
+        public int DisplayTimeMs {
             get {
-                return ((double)(this["DisplayTimeMs"]));
+                return ((int)(this["DisplayTimeMs"]));
             }
             set {
                 this["DisplayTimeMs"] = value;
