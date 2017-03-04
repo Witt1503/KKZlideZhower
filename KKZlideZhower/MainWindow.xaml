@@ -1,0 +1,57 @@
+﻿<Window x:Class="KKZlideZhower.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Loaded="Window_Loaded"
+        Title="Slide Show" Height="auto" Width="auto"
+        WindowState="Maximized"
+        WindowStyle="None">
+  <Window.Resources>
+
+  </Window.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+
+    <TextBlock x:Name="Overlay"  Grid.Row="2" Grid.Column="1"  Text="" Panel.ZIndex="2" FontSize="60" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,30"
+               Foreground="White">
+      <TextBlock.Effect>
+        <DropShadowEffect
+            ShadowDepth="0"
+            Direction="330"
+            Color="Black"
+            Opacity="1"
+           BlurRadius="7"/>
+      </TextBlock.Effect>
+    </TextBlock>
+    <Image Grid.RowSpan="3" Grid.ColumnSpan="3"
+           Height="{Binding Path=ActualHeight, ElementName=container}"
+           x:Name="myImage" Stretch="Fill"  
+           Width="{Binding Path=ActualWidth, ElementName=container}" Panel.ZIndex="1"/>
+    
+
+  </Grid>
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
