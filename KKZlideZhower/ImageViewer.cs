@@ -9,14 +9,12 @@ namespace KKZlideZhower
     {
         private string file;
         public bool isReklame;
-        private Image myImage;
-        private TextBlock Overlay;
+        private MainWindow main;
 
-        public ImageViewer(string file, Image img, TextBlock Overlay)
+        public ImageViewer(string file, MainWindow main)
         {
             this.file = file;
-            this.myImage = img;
-            this.Overlay = Overlay;
+            this.main = main;
             var txt = file.Split('\\');
             isReklame = txt[txt.Length - 2] == "Reklamer";
         }
@@ -30,10 +28,10 @@ namespace KKZlideZhower
             image.BeginInit();
             image.UriSource = new Uri(file, UriKind.Absolute);
             image.EndInit();
-            myImage.Source = image;
-            myImage.Stretch = Stretch.Fill;
-            myImage.StretchDirection = StretchDirection.Both;
-            Overlay.Text = isReklame ? "" : txt[txt.Length - 2];
+            main.myImage.Source = image;
+            main.myImage.Stretch = Stretch.Fill;
+            main.myImage.StretchDirection = StretchDirection.Both;
+            main.Overlay.Text = isReklame ? "" : txt[txt.Length - 2];
         }
     }
 }

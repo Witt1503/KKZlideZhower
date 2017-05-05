@@ -32,13 +32,12 @@
            BlurRadius="7"/>
       </TextBlock.Effect>
     </TextBlock>
-    <Image Grid.RowSpan="3" Grid.ColumnSpan="3"
+        <Image Grid.RowSpan="3" Grid.ColumnSpan="3" Visibility="Visible"
            Height="{Binding Path=ActualHeight, ElementName=container}"
            x:Name="myImage" Stretch="Fill"  
            Width="{Binding Path=ActualWidth, ElementName=container}" Panel.ZIndex="1"/>
-    
 
-  </Grid>
+    </Grid>
 </Window>
 
 

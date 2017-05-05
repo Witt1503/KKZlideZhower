@@ -66,7 +66,7 @@ namespace KKZlideZhower
                 {
                     var randomNumber = random.Next(allPaths.Count);
                     var allPath = allPaths[randomNumber];
-                    var tmp = new ImageViewer(allPath, myImage, Overlay);
+                    var tmp = new ImageViewer(allPath, this);
                     if (tmp.isReklame)
                     {
                         tmp.time = TimeSpan.FromMilliseconds(1.5*Settings.Default.DisplayTimeMs);
@@ -79,6 +79,7 @@ namespace KKZlideZhower
                     list.AddLast(tmp);
                     allPaths.RemoveAt(randomNumber);
                 }
+                list.AddFirst(lvlUpData());
             }
             catch
             (Exception e)
@@ -87,6 +88,14 @@ namespace KKZlideZhower
                 Console.WriteLine(e.Message);
             }
             return list;
+        }
+
+        private IViewer lvlUpData()
+        {
+            
+            var lvlup = new HtmlViewer(this, rootDir);
+            lvlup.time = TimeSpan.FromMilliseconds(Settings.Default.DisplayTimeMs);
+            return lvlup;
         }
 
         void timer_Tick(object sender, EventArgs e)
@@ -99,23 +108,7 @@ namespace KKZlideZhower
         }
 
 
-        private string pullLvlUpData()
-        {
-            var url = @"https://www.dropbox.com/s/6ouufk1g0808thd/LvlUp_F17.csv?dl=1";
-            string data = string.Empty;
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                data = reader.ReadToEnd();
-            }
-
-            return data;
-        }
+        
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {

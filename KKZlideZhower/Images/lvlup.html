@@ -1,0 +1,96 @@
+<html>
+   <head>
+   <meta http-equiv="X-UA-Compatible" content="IE=edge; charset=windows-1252" /> 
+   <meta name=ProgId content=Excel.Sheet>
+   <meta name=Generator content="Microsoft Excel 15">
+   <style id="Test20_20229_Styles">
+   #container{
+   border-style: solid;
+   border-color:#0000FF;
+   text-align-last: center;
+   }
+   td{
+   padding: 0px 10px 0px 10px
+   }
+   .navn,.stdn,.argang{
+   text-align-last: left;
+   }
+   
+   </style>
+    <title>Not Done</title>
+   </head>
+   <body bgcolor="#E6E6FA">
+      <center>
+         <img src="http://vignette3.wikia.nocookie.net/fossilfighters/images/5/5b/LevelUP.png/revision/latest?cb=20120414000214" height="30%">      
+<script>
+var url = "https://dl.dropboxusercontent.com/s/6ouufk1g0808thd/LvlUp_F17.csv";
+var result;
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        result = xhr.responseText;
+		// start the table
+		var html = '<table>';
+
+		// split into lines
+		var rows = result.split("\n");
+
+		// parse lines
+		rows.forEach( function getvalues(ourrow) {
+		var re = new RegExp(/\d{2}[\/]\d{2}[\/]\d{4}\s+\d{2}[\:]\d{2}/g);
+		var test = re.test(ourrow);
+		if(ourrow == "" || test)
+		{return};
+		// start a table row
+		html += "<tr>";
+
+		// split line into columns
+		var columns = ourrow.split(",");
+
+		html += "<td class='navn'>" + columns[0] + "</td>";
+		html += "<td class='stdn'>" + columns[1] + "</td>";
+		html += "<td class='argang'>" + columns[2] + "</td>";
+		html += "<td class='niveau'>" + columns[3] + "</td>";
+		html += "<td class='antal'>" + columns[4] + "</td>";
+
+		// close row
+		html += "</tr>";
+		})
+		// close table
+		html += "</table>";
+
+		// insert into div
+		document.getElementById("container").innerHTML = html;
+		document.title = "done";
+		
+		//
+
+    }
+}
+xhr.open("GET", url, true);
+// xhr.setRequestHeader("access_token", token);
+xhr.setRequestHeader("accept-encoding", "gzip, deflate");
+xhr.setRequestHeader("accept-language", " en-US,en;q=0.8");
+xhr.send();
+</script>     
+         
+
+      <p id="container" border=0 cellpadding=0 cellspacing=0 width=648 style='border-collapse:
+       collapse;table-layout:fixed;width:486pt'>
+
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=304 style='width:228pt'></td>
+  <td width=288 style='width:216pt'></td>
+  <td width=32 style='width:24pt'></td>
+  <td width=24 style='width:18pt'></td>
+ </tr>
+ <![endif]>
+</p>
+      </center>
+      
+   </body>
+   
+   
+</html>
+
