@@ -36,8 +36,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlRenderer, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.Core.1.5.0.6\lib\net40-client\HtmlRenderer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net40-client\HtmlRenderer.WinForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,6 +65,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ImageViewer.cs" />
+    <Compile Include="IViewer.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -96,34 +108,12 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Plane01.jpeg" />
-    <Resource Include="Images\Plane02.jpeg" />
-    <Resource Include="Images\Plane03.jpeg" />
-    <Resource Include="Images\Plane04.jpeg" />
-    <Resource Include="Images\Plane05.jpeg" />
-    <Resource Include="Images\Plane06.jpeg" />
-    <Resource Include="Images\Plane07.jpeg" />
-    <Resource Include="Images\Plane08.jpeg" />
-    <Resource Include="Images\Plane09.jpeg" />
-    <Resource Include="Images\Plane10.jpeg" />
-    <Resource Include="Images\Plane11.jpeg" />
-    <Resource Include="Images\Plane12.jpeg" />
-    <Resource Include="Images\Plane13.jpeg" />
-    <Resource Include="Images\Plane14.jpeg" />
-    <Resource Include="Images\Plane15.jpeg" />
-    <Resource Include="Images\Plane16.jpeg" />
-    <Resource Include="Images\Plane17.jpeg" />
-    <Resource Include="Images\Plane18.jpeg" />
-    <Resource Include="Images\Plane19.jpeg" />
-    <Resource Include="Images\Plane20.jpeg" />
-    <Resource Include="Images\Plane21.jpeg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

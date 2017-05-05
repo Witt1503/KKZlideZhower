@@ -14,97 +14,127 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using KKZlideZhower.Properties;
+using System.Net;
+using TheArtOfDev.HtmlRenderer.WinForms;
+using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace KKZlideZhower
 {
-  /// <summary>
-  /// Interaction logic for MainWindow.xaml
-  /// </summary>
-  public partial class MainWindow : Window
-  {
-    DispatcherTimer timer;
-    private LinkedList<string> pathList;
-    private LinkedListNode<string> currentPath;
-    private string rootDir;
-
-    public MainWindow()
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
     {
-      InitializeComponent();
-      pathList = new LinkedList<string>();
-      rootDir = Settings.Default.AbsolutePath;
-      
+        DispatcherTimer timer;
+        private LinkedList<IViewer> pathList;
+        private LinkedListNode<IViewer> currentPath;
+        private string rootDir;
+        private DateTime lastLoaded;
 
-      pathList = createPathList(rootDir);
-      currentPath = pathList.First;
-      timer = new DispatcherTimer();
-      timer.Interval = new TimeSpan(0, 0, 0, 0, Settings.Default.DisplayTimeMs);
-      timer.Tick += new EventHandler(timer_Tick);
-    }
-
-    private LinkedList<string> createPathList(string rootDir)
-    {
-      LinkedList<string> list = new LinkedList<string>();
-      List<string> allPaths = new List<string>();
-      try
-      {
-        foreach (var directory in Directory.GetDirectories(rootDir))
+        public MainWindow()
         {
-          foreach (var file in Directory.GetFiles(directory))
-          {
-            allPaths.Add(file);
-          }
+            InitializeComponent();
+            pathList = new LinkedList<IViewer>();
+            rootDir = Settings.Default.AbsolutePath;
+
+            pathList = createPathList(rootDir);
+            currentPath = pathList.First;
+            timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 0, 0, Settings.Default.DisplayTimeMs);
+            timer.Tick += new EventHandler(timer_Tick);
         }
-        var random = new Random();
-        
-        while (allPaths.Count > 0)
+
+
+        private LinkedList<IViewer> createPathList(string rootDir)
         {
-          var randomNumber = random.Next(allPaths.Count);
-          var allPath = allPaths[randomNumber];
-          
-          list.AddLast(allPath);
-          allPaths.RemoveAt(randomNumber);
+            var list = new LinkedList<IViewer>();
+            List<string> allPaths = new List<string>();
+            try
+            {
+                foreach (var directory in Directory.GetDirectories(rootDir))
+                {
+                    foreach (var file in Directory.GetFiles(directory))
+                    {
+                        allPaths.Add(file);
+                    }
+                }
+                var random = new Random();
+
+                while (allPaths.Count > 0)
+                {
+                    var randomNumber = random.Next(allPaths.Count);
+                    var allPath = allPaths[randomNumber];
+
+                    list.AddLast(new ImageViewer(allPath,myImage,Overlay));
+                    allPaths.RemoveAt(randomNumber);
+                }
+            }
+            catch
+            (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+            }
+            return list;
         }
-      }
-      catch
-      (Exception e)
-      {
 
-        Console.WriteLine(e.Message);
-      }
-      return list;
-    }
+        void timer_Tick(object sender, EventArgs e)
+        {
+            // Add something that loads the lvl-up score, if it has been updated.
 
-    void timer_Tick(object sender, EventArgs e)
-    {
-      currentPath = currentPath.Next ?? currentPath.List.First;
-      PlaySlideShow(currentPath.Value);
+            currentPath = currentPath.Next ?? currentPath.List.First;
+            currentPath.Value.view();
+        }
+
+
+        private string pullLvlUpData()
+        {
+            var url = @"https://www.dropbox.com/s/6ouufk1g0808thd/LvlUp_F17.csv?dl=1";
+            string data = string.Empty;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.AutomaticDecompression = DecompressionMethods.GZip;
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                data = reader.ReadToEnd();
+            }
+
+            return data;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            currentPath = currentPath.List.First;
+            currentPath.Value.view();
+            timer.Start();
+            this.KeyDown += new KeyEventHandler(MainWindow_Shutdown);
+        }
+        private void PlaySlideShow(string path)
+        {
+            var txt = path.Split('\\');
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            image.UriSource = new Uri(path, UriKind.Absolute);
+            image.EndInit();
+            myImage.Source = image;
+            myImage.Stretch = Stretch.Fill;
+            myImage.StretchDirection = StretchDirection.Both;
+            
+            timer.IsEnabled = true;
+            Overlay.Text = txt[txt.Length - 2] == "Reklamer" ? "" : txt[txt.Length - 2];
+            //progressBar1.Value = ctr;
+        }
+        void MainWindow_Shutdown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                Application.Current.Shutdown();
+            }
+        }
     }
-    private void Window_Loaded(object sender, RoutedEventArgs e)
-    {
-      currentPath = currentPath.List.First;
-      PlaySlideShow(currentPath.Value);
-      this.KeyDown += new KeyEventHandler(MainWindow_Shutdown);
-    }
-    private void PlaySlideShow(string path)
-    {
-      BitmapImage image = new BitmapImage();
-      image.BeginInit();
-      image.UriSource = new Uri(path, UriKind.Absolute);
-      image.EndInit();
-      myImage.Source = image;
-      myImage.Stretch = Stretch.Fill;
-      myImage.StretchDirection = StretchDirection.Both;
-      timer.IsEnabled = true;
-      var txt = path.Split('\\');
-      Overlay.Text = txt[txt.Length-2] == "Reklamer" ? "" : txt[txt.Length - 2];
-      //progressBar1.Value = ctr;
-    }
-    void MainWindow_Shutdown(object sender, KeyEventArgs e)
-    {
-      if (e.Key == Key.Escape)
-      {
-        Application.Current.Shutdown();
-      }
-    }
-  }
 }
