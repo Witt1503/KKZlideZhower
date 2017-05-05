@@ -8,6 +8,7 @@ namespace KKZlideZhower
     internal class ImageViewer:IViewer
     {
         private string file;
+        public bool isReklame;
         private Image myImage;
         private TextBlock Overlay;
 
@@ -16,8 +17,13 @@ namespace KKZlideZhower
             this.file = file;
             this.myImage = img;
             this.Overlay = Overlay;
+            var txt = file.Split('\\');
+            isReklame = txt[txt.Length - 2] == "Reklamer";
         }
-                public void view()
+
+        public TimeSpan time { get; set; }
+
+        public void view()
         {
             var txt = file.Split('\\');
             BitmapImage image = new BitmapImage();
@@ -27,7 +33,7 @@ namespace KKZlideZhower
             myImage.Source = image;
             myImage.Stretch = Stretch.Fill;
             myImage.StretchDirection = StretchDirection.Both;
-            Overlay.Text = txt[txt.Length - 2] == "Reklamer" ? "" : txt[txt.Length - 2];
+            Overlay.Text = isReklame ? "" : txt[txt.Length - 2];
         }
     }
 }

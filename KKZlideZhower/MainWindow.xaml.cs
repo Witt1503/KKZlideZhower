@@ -66,8 +66,17 @@ namespace KKZlideZhower
                 {
                     var randomNumber = random.Next(allPaths.Count);
                     var allPath = allPaths[randomNumber];
+                    var tmp = new ImageViewer(allPath, myImage, Overlay);
+                    if (tmp.isReklame)
+                    {
+                        tmp.time = TimeSpan.FromMilliseconds(1.5*Settings.Default.DisplayTimeMs);
+                    }
+                    else
+                    {
+                        tmp.time = TimeSpan.FromMilliseconds(Settings.Default.DisplayTimeMs);
 
-                    list.AddLast(new ImageViewer(allPath,myImage,Overlay));
+                    }
+                    list.AddLast(tmp);
                     allPaths.RemoveAt(randomNumber);
                 }
             }
@@ -85,6 +94,7 @@ namespace KKZlideZhower
             // Add something that loads the lvl-up score, if it has been updated.
 
             currentPath = currentPath.Next ?? currentPath.List.First;
+            timer.Interval = currentPath.Value.time;
             currentPath.Value.view();
         }
 
@@ -113,21 +123,6 @@ namespace KKZlideZhower
             currentPath.Value.view();
             timer.Start();
             this.KeyDown += new KeyEventHandler(MainWindow_Shutdown);
-        }
-        private void PlaySlideShow(string path)
-        {
-            var txt = path.Split('\\');
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.UriSource = new Uri(path, UriKind.Absolute);
-            image.EndInit();
-            myImage.Source = image;
-            myImage.Stretch = Stretch.Fill;
-            myImage.StretchDirection = StretchDirection.Both;
-            
-            timer.IsEnabled = true;
-            Overlay.Text = txt[txt.Length - 2] == "Reklamer" ? "" : txt[txt.Length - 2];
-            //progressBar1.Value = ctr;
         }
         void MainWindow_Shutdown(object sender, KeyEventArgs e)
         {
