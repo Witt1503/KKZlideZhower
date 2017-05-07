@@ -32,6 +32,7 @@ namespace KKZlideZhower
         private LinkedListNode<IViewer> currentPath;
         private string rootDir;
         private DateTime lastLoaded;
+        private LinkedListNode<IViewer> resume;
 
         public MainWindow()
         {
@@ -41,11 +42,24 @@ namespace KKZlideZhower
 
             pathList = createPathList(rootDir);
             currentPath = pathList.First;
+            isNewData();
             timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 0, 0, Settings.Default.DisplayTimeMs);
             timer.Tick += new EventHandler(timer_Tick);
         }
 
+        private bool isNewData()
+        {
+            string rootDir2 = @"D:\Dropbox\Kælderen\KKZlideZhower";
+            var last = File.GetLastWriteTime(rootDir2 + @"\..\Level-Up\LvlUp_F17.csv");
+            if (last > lastLoaded)
+            {
+                lastLoaded = last;
+                return true;
+            }
+            return false;
+
+        }
 
         private LinkedList<IViewer> createPathList(string rootDir)
         {
@@ -69,7 +83,7 @@ namespace KKZlideZhower
                     var tmp = new ImageViewer(allPath, this);
                     if (tmp.isReklame)
                     {
-                        tmp.time = TimeSpan.FromMilliseconds(1.5*Settings.Default.DisplayTimeMs);
+                        tmp.time = TimeSpan.FromMilliseconds(1.5 * Settings.Default.DisplayTimeMs);
                     }
                     else
                     {
@@ -92,7 +106,7 @@ namespace KKZlideZhower
 
         private IViewer lvlUpData()
         {
-            
+
             var lvlup = new HtmlViewer(this, rootDir);
             lvlup.time = TimeSpan.FromMilliseconds(Settings.Default.DisplayTimeMs);
             return lvlup;
@@ -101,14 +115,23 @@ namespace KKZlideZhower
         void timer_Tick(object sender, EventArgs e)
         {
             // Add something that loads the lvl-up score, if it has been updated.
+            if (isNewData())
+            {
+                resume = currentPath.Next ?? currentPath.List.First;
+                currentPath = currentPath.List.First;
+            }
+            else
+            {
 
-            currentPath = currentPath.Next ?? currentPath.List.First;
+                currentPath = (resume)??(currentPath.Next ?? currentPath.List.First);
+                resume = null;
+            }
             timer.Interval = currentPath.Value.time;
             currentPath.Value.view();
         }
 
 
-        
+
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
