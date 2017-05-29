@@ -46,5 +46,17 @@ namespace KKZlideZhower.Properties {
                 this["DisplayTimeMs"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int ReklameInterval {
+            get {
+                return ((int)(this["ReklameInterval"]));
+            }
+            set {
+                this["ReklameInterval"] = value;
+            }
+        }
     }
 }

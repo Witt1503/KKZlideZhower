@@ -29,10 +29,13 @@ namespace KKZlideZhower
     {
         DispatcherTimer timer;
         private LinkedList<IViewer> pathList;
+        private LinkedList<IViewer> reklamePathList;
         private LinkedListNode<IViewer> currentPath;
+        private LinkedListNode<IViewer> currentReklamePath;
         private string rootDir;
         private DateTime lastLoaded;
         private LinkedListNode<IViewer> resume;
+        private int spinner = 0;
 
         public MainWindow()
         {
@@ -40,8 +43,9 @@ namespace KKZlideZhower
             pathList = new LinkedList<IViewer>();
             rootDir = Settings.Default.AbsolutePath;
 
-            pathList = createPathList(rootDir);
+            createPathList(rootDir);
             currentPath = pathList.First;
+            currentReklamePath = reklamePathList.First;
             isNewData();
             timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 0, 0, Settings.Default.DisplayTimeMs);
@@ -61,17 +65,29 @@ namespace KKZlideZhower
 
         }
 
-        private LinkedList<IViewer> createPathList(string rootDir)
+        private void createPathList(string rootDir)
         {
             var list = new LinkedList<IViewer>();
+            var reklameList = new LinkedList<IViewer>();
             List<string> allPaths = new List<string>();
+            List<string> reklamePaths = new List<string>();
             try
             {
                 foreach (var directory in Directory.GetDirectories(rootDir))
                 {
+
+                    var folder = directory.Split('\\');
                     foreach (var file in Directory.GetFiles(directory))
                     {
-                        allPaths.Add(file);
+                        
+                        if (folder[folder.Length-1] == "Reklamer")
+                        {
+                            reklamePaths.Add(file);
+                        }
+                        else
+                        {
+                            allPaths.Add(file);
+                        }
                     }
                 }
                 var random = new Random();
@@ -81,19 +97,21 @@ namespace KKZlideZhower
                     var randomNumber = random.Next(allPaths.Count);
                     var allPath = allPaths[randomNumber];
                     var tmp = new ImageViewer(allPath, this);
-                    if (tmp.isReklame)
-                    {
-                        tmp.time = TimeSpan.FromMilliseconds(1.5 * Settings.Default.DisplayTimeMs);
-                    }
-                    else
-                    {
-                        tmp.time = TimeSpan.FromMilliseconds(Settings.Default.DisplayTimeMs);
-
-                    }
+                    tmp.time = TimeSpan.FromMilliseconds(Settings.Default.DisplayTimeMs);
                     list.AddLast(tmp);
                     allPaths.RemoveAt(randomNumber);
                 }
-                list.AddFirst(lvlUpData());
+//                list.AddFirst(lvlUpData());
+                while(reklamePaths.Count > 0)
+                {
+                    var randomNumber = random.Next(allPaths.Count);
+                    var reklamePath = reklamePaths[randomNumber];
+                    var tmp = new ImageViewer(reklamePath, this);
+                    tmp.time = TimeSpan.FromMilliseconds(Settings.Default.DisplayTimeMs*1.5);
+
+                    reklameList.AddLast(tmp);
+                    reklamePaths.RemoveAt(randomNumber);
+                }
             }
             catch
             (Exception e)
@@ -101,7 +119,8 @@ namespace KKZlideZhower
 
                 Console.WriteLine(e.Message);
             }
-            return list;
+            pathList = list;
+            reklamePathList = reklameList;
         }
 
         private IViewer lvlUpData()
@@ -114,7 +133,7 @@ namespace KKZlideZhower
 
         void timer_Tick(object sender, EventArgs e)
         {
-            // Add something that loads the lvl-up score, if it has been updated.
+            
             if (isNewData())
             {
                 resume = currentPath.Next ?? currentPath.List.First;
@@ -122,14 +141,25 @@ namespace KKZlideZhower
             }
             else
             {
-
-                currentPath = (resume)??(currentPath.Next ?? currentPath.List.First);
+                if (spinner == Settings.Default.ReklameInterval)
+                {
+                    spinner = 0;
+                    currentReklamePath = (resume) ?? (currentReklamePath.Next ?? currentReklamePath.List.First);
+                    timer.Interval = currentReklamePath.Value.time;
+                    currentReklamePath.Value.view();
+                }
+                else
+                {
+                    spinner++;
+                    currentPath = (resume) ?? (currentPath.Next ?? currentPath.List.First);
+                    timer.Interval = currentPath.Value.time;
+                    currentPath.Value.view();
+                }
                 resume = null;
             }
-            timer.Interval = currentPath.Value.time;
-            currentPath.Value.view();
+            
         }
-
+        -
 
 
 
